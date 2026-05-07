@@ -1,0 +1,211 @@
+using System;
+using System.Collections.Generic;
+
+public interface IKategori
+{
+    string Kategori();
+}
+
+public abstract class Produk : IKategori
+{
+    public string Nama { get; private set; }
+    public double Harga { get; private set; }
+
+    public Produk(string nama, double harga)
+    {
+        Nama = nama;
+        Harga = harga;
+    }
+
+    public string InfoProduk()
+    {
+        return "Nama: " + Nama + " | Harga: Rp" + Harga.ToString("N0") + " | Kategori: " + Kategori();
+    }
+
+    public abstract string Kategori();
+}
+
+public class Elektronik : Produk
+{
+    public int Garansi { get; private set; }
+
+    public Elektronik(string nama, double harga, int garansi)
+        : base(nama, harga)
+    {
+        Garansi = garansi;
+    }
+
+    public string CekGaransi()
+    {
+        return "Garansi: " + Garansi + " bulan";
+    }
+
+    public override string Kategori() { return "Elektronik"; }
+}
+
+public class Makanan : Produk
+{
+    public string TanggalKadaluarsa { get; private set; }
+
+    public Makanan(string nama, double harga, string kadaluarsa)
+        : base(nama, harga)
+    {
+        TanggalKadaluarsa = kadaluarsa;
+    }
+
+    public string CekKadaluarsa()
+    {
+        return "Kadaluarsa: " + TanggalKadaluarsa;
+    }
+
+    public override string Kategori() { return "Makanan"; }
+}
+
+
+public class Laptop : Elektronik
+{
+    public Laptop(string nama, double harga, int garansi)
+        : base(nama, harga, garansi) { }
+
+    public string InstallSoftware(string software)
+    {
+        return Nama + " menginstall " + software;
+    }
+
+    public override string Kategori() { return "Laptop"; }
+}
+
+public class HP : Elektronik
+{
+    public HP(string nama, double harga, int garansi)
+        : base(nama, harga, garansi) { }
+
+    public string Telepon(string nomor)
+    {
+        return Nama + " menelepon " + nomor;
+    }
+
+    public override string Kategori() { return "HP"; }
+}
+
+public class Snack : Makanan
+{
+    public Snack(string nama, double harga, string kadaluarsa)
+        : base(nama, harga, kadaluarsa) { }
+
+    public string Makan()
+    {
+        return "Makan " + Nama + ", uenakkk tenan!";
+    }
+
+    public override string Kategori() { return "Snack"; }
+}
+
+public class Minuman : Makanan
+{
+    public Minuman(string nama, double harga, string kadaluarsa)
+        : base(nama, harga, kadaluarsa) { }
+
+    public string Dinginkan()
+    {
+        return Nama + " didinginkan di kulkas.";
+    }
+
+    public override string Kategori() { return "Minuman"; }
+}
+
+public class Toko
+{
+    public string NamaToko { get; private set; }
+    private List<Produk> daftarProduk = new List<Produk>();
+
+    public Toko(string namaToko)
+    {
+        NamaToko = namaToko;
+    }
+
+    public void TambahProduk(Produk produk)
+    {
+        daftarProduk.Add(produk);
+    }
+
+    public List<Produk> DaftarProduk()
+    {
+        return daftarProduk;
+    }
+}
+
+
+class Program
+{
+    static void Main()
+    {
+        Toko toko = new Toko("Toko Adin Serba Ada");
+
+        Laptop laptop1 = new Laptop("MacBook Neo", 13500000, 24);
+        Laptop laptop2 = new Laptop("ASUS VivoBook", 7200000, 12);
+        HP hp1 = new HP("Iphone 18 Pro Max", 34000000, 10);
+        HP hp2 = new HP("Xiaomi Redmi Note 13", 2800000, 12);
+        Snack snack1 = new Snack("Chitato BBQ", 15000, "2026-12-01");
+        Snack snack2 = new Snack("Taro Original", 12000, "2026-11-20");
+        Snack snack3 = new Snack("Oreo Vanilla", 10000, "2027-01-15");
+        Snack snack4 = new Snack("Pringles Sour Cream", 35000, "2026-10-30");
+        Minuman minuman1 = new Minuman("Teh Botol Sosro", 5000, "2026-09-15");
+        Minuman minuman2 = new Minuman("Aqua 600ml", 4000, "2027-03-01");
+        Minuman minuman3 = new Minuman("Pocari Sweat", 8000, "2026-08-20");
+        Minuman minuman4 = new Minuman("Kopi Good Day", 3500, "2026-12-31");
+
+        toko.TambahProduk(laptop1);
+        toko.TambahProduk(laptop2);
+        toko.TambahProduk(hp1);
+        toko.TambahProduk(hp2);
+        toko.TambahProduk(snack1);
+        toko.TambahProduk(snack2);
+        toko.TambahProduk(snack3);
+        toko.TambahProduk(snack4);
+        toko.TambahProduk(minuman1);
+        toko.TambahProduk(minuman2);
+        toko.TambahProduk(minuman3);
+        toko.TambahProduk(minuman4);
+
+        Console.WriteLine("DAFTAR PRODUK: + toko.NamaToko" );
+        foreach (Produk p in toko.DaftarProduk())
+        {
+            Console.WriteLine("  " + p.InfoProduk());
+        }
+
+        Console.WriteLine("\nPOLYMORPHISM: Kategori() ");
+        foreach (Produk p in toko.DaftarProduk())
+        {
+            Console.WriteLine("  " + p.Nama + " -> " + p.Kategori());
+        }
+
+        Console.WriteLine("\nMETHOD KHUSUS ");
+        foreach (Produk p in toko.DaftarProduk())
+        {
+            Console.WriteLine(p.Nama );
+            if (p is Laptop l)
+            {
+                Console.WriteLine("  " + l.CekGaransi());
+                Console.WriteLine("  " + l.InstallSoftware("Visual Studio"));
+            }
+            else if (p is HP h)
+            {
+                Console.WriteLine("  " + h.CekGaransi());
+                Console.WriteLine("  " + h.Telepon("081234567890"));
+            }
+            else if (p is Snack s)
+            {
+                Console.WriteLine("  " + s.CekKadaluarsa());
+                Console.WriteLine("  " + s.Makan());
+            }
+            else if (p is Minuman m)
+            {
+                Console.WriteLine("  " + m.CekKadaluarsa());
+                Console.WriteLine("  " + m.Dinginkan());
+            }
+        }
+
+        Console.ReadLine();
+    }
+}
